@@ -85,6 +85,11 @@ class SemanticPdfReaderServer:
             )
 
 def main():
+    # Force UTF-8 and disable newline translation to avoid CR issues on Windows
+    if sys.platform == "win32":
+        sys.stdin.reconfigure(encoding='utf-8', newline='')
+        sys.stdout.reconfigure(encoding='utf-8', newline='')
+    
     # Write to stderr so it doesn't interfere with stdout JSON-RPC
     print("Starting Semantic PDF Reader MCP Server...", file=sys.stderr)
     server = SemanticPdfReaderServer()
