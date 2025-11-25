@@ -4,10 +4,7 @@ import sys
 from typing import Any, Dict, List
 
 from mcp.server import Server
-from mcp.server.stdio import StdioServerTransport
-from mcp.types import Tool, TextContent, ImageContent, EmbeddedResource
-
-from .pdf_processor import PdfProcessor
+from mcp.server.stdio import stdio_server
 
 class SemanticPdfReaderServer:
     def __init__(self):
@@ -78,8 +75,12 @@ class SemanticPdfReaderServer:
                 raise ValueError(f"Unknown tool: {name}")
 
     async def run(self):
-        transport = StdioServerTransport()
-        await self.server.run(transport.read_messages(), transport.write_message)
+        async with stdio_server() as (read_stream, write_stream):
+            await self.server.run(
+                read_stream,
+                write_stream,
+                self.server.create_initialization_options()
+            )
 
 def main():
     server = SemanticPdfReaderServer()
