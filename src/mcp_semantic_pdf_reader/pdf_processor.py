@@ -5,13 +5,25 @@ from typing import Any, Dict, Optional
 from docling.document_converter import DocumentConverter, PdfFormatOption
 from docling.datamodel.base_models import InputFormat
 from docling.datamodel.pipeline_options import PdfPipelineOptions
+from docling.datamodel.accelerator_options import AcceleratorDevice, AcceleratorOptions
 
 class PdfProcessor:
     def __init__(self):
-        # Configure pipeline options if needed
+        # Configure pipeline options
         self.pipeline_options = PdfPipelineOptions()
-        self.pipeline_options.do_ocr = True # Enable OCR for better results on scanned docs
-        self.pipeline_options.do_table_structure = True # Enable table structure recognition
+        
+        # Optimize for performance:
+        # 1. Disable OCR by default (heavy resource usage). Enable only if needed.
+        self.pipeline_options.do_ocr = False 
+        
+        # 2. Enable table structure recognition (useful but less heavy than OCR)
+        self.pipeline_options.do_table_structure = True
+        
+        # 3. Limit resource usage via AcceleratorOptions
+        self.pipeline_options.accelerator_options = AcceleratorOptions(
+            num_threads=4, # Limit threads to avoid hogging CPU
+            device=AcceleratorDevice.AUTO
+        )
         
         self.converter = DocumentConverter(
             allowed_formats=[InputFormat.PDF],
