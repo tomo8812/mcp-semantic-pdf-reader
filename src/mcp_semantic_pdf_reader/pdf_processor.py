@@ -2,7 +2,7 @@ import json
 from pathlib import Path
 from typing import Any, Dict, Optional
 
-from docling.document_converter import DocumentConverter
+from docling.document_converter import DocumentConverter, PdfFormatOption
 from docling.datamodel.base_models import InputFormat
 from docling.datamodel.pipeline_options import PdfPipelineOptions
 
@@ -15,7 +15,9 @@ class PdfProcessor:
         
         self.converter = DocumentConverter(
             allowed_formats=[InputFormat.PDF],
-            format_options={InputFormat.PDF: self.pipeline_options}
+            format_options={
+                InputFormat.PDF: PdfFormatOption(pipeline_options=self.pipeline_options)
+            }
         )
 
     def process_pdf(self, file_path: str) -> str:
