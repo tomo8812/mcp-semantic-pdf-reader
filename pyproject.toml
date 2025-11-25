@@ -1,0 +1,17 @@
+[project]
+name = "mcp-semantic-pdf-reader"
+version = "0.1.0"
+description = "A MCP server that reads PDF files with semantic understanding using Docling"
+readme = "README.md"
+requires-python = ">=3.10"
+dependencies = [
+    "mcp",
+    "docling"
+]
+
+[project.scripts]
+mcp-semantic-pdf-reader = "mcp_semantic_pdf_reader.server:main"
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
