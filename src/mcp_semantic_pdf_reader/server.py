@@ -36,6 +36,11 @@ class SemanticPdfReaderServer:
                             "path": {
                                 "type": "string",
                                 "description": "Absolute path to the PDF file"
+                            },
+                            "ocr": {
+                                "type": "boolean",
+                                "description": "Enable OCR for scanned documents (slower)",
+                                "default": False
                             }
                         },
                         "required": ["path"]
@@ -61,11 +66,12 @@ class SemanticPdfReaderServer:
         async def handle_call_tool(name: str, arguments: Dict[str, Any]) -> List[TextContent | ImageContent | EmbeddedResource]:
             if name == "read_pdf_structure":
                 path = arguments.get("path")
+                ocr = arguments.get("ocr", False)
                 if not path:
                     raise ValueError("Missing 'path' argument")
                 
                 try:
-                    markdown = self.processor.process_pdf(path)
+                    markdown = self.processor.process_pdf(path, ocr=ocr)
                     return [TextContent(type="text", text=markdown)]
                 except Exception as e:
                     return [TextContent(type="text", text=f"Error processing PDF: {str(e)}")]

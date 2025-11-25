@@ -32,12 +32,33 @@ class PdfProcessor:
             }
         )
 
-    def process_pdf(self, file_path: str) -> str:
+    def process_pdf(self, file_path: str, ocr: bool = False) -> str:
         """
         Process a PDF file and return its content as Markdown.
+        
+        Args:
+            file_path: Absolute path to the PDF file
+            ocr: Whether to enable OCR (slower but better for scanned docs)
         """
         try:
-            result = self.converter.convert(file_path)
+            if ocr:
+                # Create a temporary converter with OCR enabled
+                ocr_options = PdfPipelineOptions()
+                ocr_options.do_ocr = True
+                ocr_options.do_table_structure = True
+                ocr_options.accelerator_options = self.pipeline_options.accelerator_options
+                
+                converter = DocumentConverter(
+                    allowed_formats=[InputFormat.PDF],
+                    format_options={
+                        InputFormat.PDF: PdfFormatOption(pipeline_options=ocr_options)
+                    }
+                )
+                result = converter.convert(file_path)
+            else:
+                # Use the default optimized converter
+                result = self.converter.convert(file_path)
+                
             # Export to markdown
             markdown_content = result.document.export_to_markdown()
             return markdown_content
