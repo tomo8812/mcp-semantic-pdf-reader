@@ -1,8 +1,14 @@
 import asyncio
 import json
 import sys
+import os
 import io
 import anyio
+
+# Disable symlinks for HuggingFace Hub to avoid WinError 1314 on Windows
+# This must be set before any library using huggingface_hub is imported/used
+os.environ["HF_HUB_DISABLE_SYMLINKS"] = "1"
+
 from typing import Any, Dict, List
 
 from mcp.server import Server
