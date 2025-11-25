@@ -85,6 +85,8 @@ class SemanticPdfReaderServer:
             )
 
 def main():
+    # Write to stderr so it doesn't interfere with stdout JSON-RPC
+    print("Starting Semantic PDF Reader MCP Server...", file=sys.stderr)
     server = SemanticPdfReaderServer()
     asyncio.run(server.run())
 
