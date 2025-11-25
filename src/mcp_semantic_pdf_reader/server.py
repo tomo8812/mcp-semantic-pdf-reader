@@ -5,6 +5,8 @@ from typing import Any, Dict, List
 
 from mcp.server import Server
 from mcp.server.stdio import stdio_server
+from mcp.types import Tool, TextContent, ImageContent, EmbeddedResource
+from .pdf_processor import PdfProcessor
 
 class SemanticPdfReaderServer:
     def __init__(self):
