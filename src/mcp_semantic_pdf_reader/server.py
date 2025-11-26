@@ -41,6 +41,10 @@ class SemanticPdfReaderServer:
                                 "type": "boolean",
                                 "description": "Enable OCR for scanned documents (slower)",
                                 "default": False
+                            },
+                            "page_range": {
+                                "type": "string",
+                                "description": "Pages to process (e.g. '1-5', '1,3,5'). 1-based indexing. Useful for large documents."
                             }
                         },
                         "required": ["path"]
@@ -67,11 +71,13 @@ class SemanticPdfReaderServer:
             if name == "read_pdf_structure":
                 path = arguments.get("path")
                 ocr = arguments.get("ocr", False)
+                page_range = arguments.get("page_range")
+                
                 if not path:
                     raise ValueError("Missing 'path' argument")
                 
                 try:
-                    markdown = self.processor.process_pdf(path, ocr=ocr)
+                    markdown = self.processor.process_pdf(path, ocr=ocr, page_range=page_range)
                     return [TextContent(type="text", text=markdown)]
                 except Exception as e:
                     return [TextContent(type="text", text=f"Error processing PDF: {str(e)}")]
